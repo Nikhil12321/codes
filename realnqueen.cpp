@@ -27,8 +27,6 @@ bool queen(int **m, int posx, int n){
 
 
 		flag=1;
-		w = i;
-		q = posx;
 		k = 0;
 
 		while(k<8){

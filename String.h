@@ -176,7 +176,18 @@ class String{
 
             return str;
         }
-
+    friend ostream &operator<<(ostream &, const String &);
 
 
 };
+
+
+ostream & operator<<(ostream & out, const String & b){
+
+        for(int i=0;i<=b.s;i++){
+
+            out<<b.str[i]<<" ";
+
+        }
+        return out;
+    }

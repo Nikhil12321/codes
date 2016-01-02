@@ -7,7 +7,7 @@ int main(){
 
 
 
-	int n=3;
+	int n=5;
 
 	int l[n+1];
 
@@ -30,7 +30,7 @@ int main(){
 		}
 	}
 
-	cout<<l[1];
+	cout<<l[1]<<"\n";
 
 
 }

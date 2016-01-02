@@ -20,6 +20,8 @@ int main(){
     int maxl = -1111;
     int lmax = -1;
     int rmax = -1;
+    pair<char, int> x;
+
 
     while(str[i]){
         
@@ -30,8 +32,8 @@ int main(){
 
 
             
-            pair<char, int> p(str[i], i);
-            m.insert(p);
+            x(str[i], i);
+            m.insert(x);
              
             if(i - posleft > maxl){
 
@@ -47,8 +49,8 @@ int main(){
             
 
                 m.erase(str[i]);
-                pair<char, int> y(str[i], i);
-                m.insert(y);
+                x(str[i], i);
+                m.insert(x);
 
                 if(i - posleft > maxl){
 
@@ -65,7 +67,7 @@ int main(){
             posleft = m.at(str[i])+1;
 
             m.erase(str[i]);
-            pair<char, int> x(str[i], i);
+            x(str[i], i);
             m.insert(x);
         }
 

@@ -98,7 +98,7 @@ string absolutePath(string path){
             ss.pop_back();
     }
 
-    
+
     return ss;
 
 }
@@ -112,3 +112,5 @@ int main(){
 
     
 }
+
+//https://leetcode.com/problems/simplify-path/

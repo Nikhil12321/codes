@@ -68,7 +68,7 @@ int main(){
         cout<<s.top();
         s.pop();
 
-    }
+    }6
 
     cout<<endl;
 

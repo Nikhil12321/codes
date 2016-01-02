@@ -62,7 +62,9 @@ int main(){
         {   
             a = curr.first+X[i];
             b = curr.second+Y[i];
+            
             if(a>=0 && b>=0 && a<n && b<n){
+
                 if(m[a][b] != -1){
 
                     if(parent[a][b] == make_pair<int, int>(-1, -1)){

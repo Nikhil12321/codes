@@ -51,7 +51,7 @@ class Heap{
             T x;
             x = minQueue[temp];
             minQueue[temp] = minQueue[i];
-            minQueue[i] = temp;
+            minQueue[i] = x;
             heapifyMin(temp);
         }
     }
@@ -84,17 +84,12 @@ class Heap{
             heapifyBottomUp(i);
     }
     void heapifyBottomUpMin(int i){
-
         while(minQueue[parent(i)] > minQueue[i] && parent(i) != -1){
-
             T temp = minQueue[i];
             minQueue[i] = minQueue[parent(i)];
             minQueue[parent(i)] = temp;
             i = parent(i);
-            cout<<"coming ";
-            printMinHeap();
         }
-        //cout<<"done heapifying"<<endl;
     }
     void makeHeapMin(){
         for(int i=sizeMin/2; i<sizeMin; i++)
@@ -151,7 +146,6 @@ class Heap{
         for(int i=0; i<sizeMin; i++){
             minQueue[i] = temp[i];
         }
-        //cout<<"doneresizing"<<endl;
         return;
     }
     void resizeMax(){
@@ -202,7 +196,6 @@ public:
             resize();
         queue[size++] = a;
         heapifyBottomUp(size-1);
-        //cout<<"done1"<<endl;
         pushMinMax(a);
     }
     void pushMin(T a){
@@ -210,7 +203,6 @@ public:
             resizeMin();
         minQueue[sizeMin++] = a;
         heapifyBottomUpMin(sizeMin-1);
-        //cout<<"done final"<<endl;
     }
     void pushMax(T a){
         if(sizeMax == capacityMax)
@@ -222,9 +214,8 @@ public:
     }
     void pushMinMax(T a){
         if(sizeMin == 0){
-            //cout<<"done2"<<endl;
             pushMin(a);
-            //cout<<"done5"<<endl;
+
             return;
         }
         if(mintop() > a){
@@ -233,15 +224,9 @@ public:
                 maxpop();
                 pushMin(temp);
                 pushMax(a);
-                cout<<"on "<<a<<endl;
-                printMinHeap();
-                printMaxHeap();
             }
             else{
                 pushMax(a);
-                cout<<"on "<<a<<endl;
-                printMinHeap();
-                printMaxHeap();
             }
         }
         else{
@@ -250,15 +235,9 @@ public:
                 minpop();
                 pushMax(temp);
                 pushMin(a);
-                cout<<"on "<<a<<endl;
-                printMinHeap();
-                printMaxHeap();
             }
             else{
                 pushMin(a);
-                cout<<"on "<<a<<endl;
-                printMinHeap();
-                printMaxHeap();
             }
         }
     }
@@ -304,24 +283,27 @@ public:
     }
     void pop(){
         queue[0] = queue[size-1];
-        heapify(0);
         --size;
+        heapify(0);
+        
     }
     T mintop(){
         return minQueue[0];
     }
     void minpop(){
         minQueue[0] = minQueue[sizeMin-1];
-        heapifyMin(0);
         --sizeMin;
+        heapifyMin(0);
+        
     }
     T maxtop(){
         return maxQueue[0];
     }
     void maxpop(){
         maxQueue[0] = maxQueue[sizeMax-1];
-        heapifyMax(0);
         --sizeMax;
+        heapifyMax(0);
+        
     }
     void printMedian(){
 
@@ -345,10 +327,5 @@ int main(){
         cin>>x;
         a.push(x);
     }
-    /*
-    int * temp = a.getHeap();
-    for(int i=0;i<a.getSize();i++)
-        cout<<temp[i]<<" ";
-        */
     a.printMedian();
 }

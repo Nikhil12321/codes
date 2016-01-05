@@ -16,7 +16,8 @@ void swap(int *a, int i, int j);
 void heapSort(int *a, int n){
 
     int size = n;
-    for(int i=0; i<n; i++)
+    //loop only for leaf nodes
+    for(int i=n/2; i<n; i++)
         buildHeap(a, i);
     printArray(a, n);
     int i=0;
@@ -127,10 +128,4 @@ int main(){
     }
 
     heapSort(a, n);
-
-
-
-
-
-
 }

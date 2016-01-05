@@ -1,13 +1,18 @@
 #ifndef Heap
 #define Heap
 #include<iostream>
+
 using namespace std;
+
 template<typename T>
 class Heap{
 
 
     int size, capacity;
+    int sizeMin, sizeMax, capacityMin, capacityMax;
     T *queue;
+    T *minQueue;
+    T *maxQueue;
 
     int left(int i){
         if(i==0)
@@ -24,13 +29,6 @@ class Heap{
             return -1;
         return i/2;
     }
-
-    void minHeapify(int i){
-
-        for(int i=0; i<size; i++){
-            heapify(i);
-        }
-    }
     void heapify(int i){
         int temp = i;
         if((queue[left(i)] < queue[i]) && (left(i) < size))
@@ -43,6 +41,34 @@ class Heap{
             queue[temp] = queue[i];
             queue[i] = temp;
             heapify(temp);
+        }
+    }
+    void heapifyMin(int i){
+        int temp = i;
+        if((minQueue[left(i)] < minQueue[i]) && (left(i) < sizeMin))
+            temp = left(i);
+        if((minQueue[right(i)] < minQueue[temp]) && (right(i) < sizeMin))
+            temp = right(i);
+        if(temp!=i){
+            T x;
+            x = minQueue[temp];
+            minQueue[temp] = minQueue[i];
+            minQueue[i] = x;
+            heapifyMin(temp);
+        }
+    }
+    void heapifyMax(int i){
+        int temp = i;
+        if((maxQueue[left(i)] > maxQueue[i]) && (left(i) < sizeMax))
+            temp = left(i);
+        if((maxQueue[right(i)] > maxQueue[temp]) && (right(i) < sizeMax))
+            temp = right(i);
+        if(temp!=i){
+            T x;
+            x = maxQueue[temp];
+            maxQueue[temp] = maxQueue[i];
+            maxQueue[i] = temp;
+            heapifyMax(temp);
         }
     }
     void heapifyBottomUp(int i){
@@ -58,6 +84,32 @@ class Heap{
     void makeHeap(){
         for(int i=size/2; i<size; i++)
             heapifyBottomUp(i);
+    }
+    void heapifyBottomUpMin(int i){
+        while(minQueue[parent(i)] > minQueue[i] && parent(i) != -1){
+            T temp = minQueue[i];
+            minQueue[i] = minQueue[parent(i)];
+            minQueue[parent(i)] = temp;
+            i = parent(i);
+        }
+    }
+    void makeHeapMin(){
+        for(int i=sizeMin/2; i<sizeMin; i++)
+            heapifyBottomUpMin(i);
+    }
+    void heapifyBottomUpMax(int i){
+
+        while(maxQueue[parent(i)] < maxQueue[i] && parent(i) != -1){
+
+            T temp = maxQueue[i];
+            maxQueue[i] = maxQueue[parent(i)];
+            maxQueue[parent(i)] = temp;
+            i = parent(i);
+        }
+    }
+    void makeHeapMax(){
+        for(int i=sizeMax/2; i<sizeMax; i++)
+            heapifyBottomUpMax(i);
     }
     void resize(){
 
@@ -79,10 +131,48 @@ class Heap{
         }
         return;
     }
-
+    void resizeMin(){
+        int old = capacityMin;
+        if(capacityMin == 0){
+            minQueue = new T[1];  //really important, don't forget
+            capacityMin = 1;
+            return;
+        }
+        T temp[sizeMin];
+        for(int i=0; i<sizeMin; i++){
+            temp[i] = minQueue[i];
+        }
+        delete[] minQueue;
+        capacityMin = sizeMin*2;
+        minQueue = new T[capacityMin];
+        for(int i=0; i<sizeMin; i++){
+            minQueue[i] = temp[i];
+        }
+        return;
+    }
+    void resizeMax(){
+        int old = capacityMax;
+        if(capacityMax == 0){
+            maxQueue = new T[1];  //really important, don't forget
+            capacityMax = 1;
+            return;
+        }
+        T temp[sizeMax];
+        for(int i=0; i<sizeMax; i++){
+            temp[i] = maxQueue[i];
+        }
+        delete[] maxQueue;
+        capacityMax = sizeMax*2;
+        maxQueue = new T[capacityMax];
+        for(int i=0; i<sizeMax; i++){
+            maxQueue[i] = temp[i];
+        }
+        return;
+    }
 public:
 
-    Heap(){size = 0; capacity = 0; queue = NULL;}
+    Heap(){size = 0; capacity = 0; queue = NULL; minQueue = NULL; maxQueue = NULL; capacityMin=0; capacityMax = 0;
+        sizeMin=0; sizeMax=0;}
     Heap(T *a, int n){
 
         if(size == capacity)
@@ -94,28 +184,64 @@ public:
         }
         makeHeap();
     }
-    Heap(vector<T> &a){
-        int size = a.size();
-        if(size == capacity)
-            resize();
-        for(int i=0; i<n; i++){
-            if(size == capacity)
-                resize();
-            queue[size++] = a[i];
-        }
-        makeHeap();
-    }
     Heap(T a){
 
-        if(size == capacity)
+        if(size == capacity){
             resize();
+            resizeMin();
+        }
         queue[size++] = a;
+        minQueue[sizeMin++] = a;
     }
     void push(T a){
         if(size == capacity)
             resize();
         queue[size++] = a;
         heapifyBottomUp(size-1);
+        pushMinMax(a);
+    }
+    void pushMin(T a){
+        if(sizeMin == capacityMin)
+            resizeMin();
+        minQueue[sizeMin++] = a;
+        heapifyBottomUpMin(sizeMin-1);
+    }
+    void pushMax(T a){
+        if(sizeMax == capacityMax)
+            resizeMax();
+        maxQueue[sizeMax++] = a;
+        
+        heapifyBottomUpMax(sizeMax-1);
+        
+    }
+    void pushMinMax(T a){
+        if(sizeMin == 0){
+            pushMin(a);
+
+            return;
+        }
+        if(mintop() > a){
+            if(sizeMax == sizeMin){
+                T temp = maxtop();
+                maxpop();
+                pushMin(temp);
+                pushMax(a);
+            }
+            else{
+                pushMax(a);
+            }
+        }
+        else{
+            if(sizeMin > sizeMax){
+                T temp = mintop();
+                minpop();
+                pushMax(temp);
+                pushMin(a);
+            }
+            else{
+                pushMin(a);
+            }
+        }
     }
     /*
     Change the getHeap function to 
@@ -126,19 +252,12 @@ public:
     this will return the original queue and we can make changes outside the class as well
     */
     T *getHeap(){
-        T temp[size];
+        T *temp;
+        temp = new T[size];
         for(int i=0; i<size; i++){
             temp[i] = queue[i];
         } 
         return temp;
-    }
-    T top(){
-        return queue[0];
-    }
-    void pop(){
-        queue[0] = queue[size-1];
-        heapify(0);
-        size--;
     }
     void printHeap(){
 
@@ -146,8 +265,56 @@ public:
             cout<<queue[i]<<" ";
         cout<<endl;
     }
+    void printMinHeap(){
+
+        for(int i=0; i<sizeMin; i++)
+            cout<<minQueue[i]<<" ";
+        cout<<endl;
+    }
+    void printMaxHeap(){
+
+        for(int i=0; i<sizeMax; i++)
+            cout<<maxQueue[i]<<" ";
+        cout<<endl;
+    }
     int getSize(){
         return size;
+    }
+    T top(){
+        return queue[0];
+    }
+    void pop(){
+        queue[0] = queue[size-1];
+        --size;
+        heapify(0);
+        
+    }
+    T mintop(){
+        return minQueue[0];
+    }
+    void minpop(){
+        minQueue[0] = minQueue[sizeMin-1];
+        --sizeMin;
+        heapifyMin(0);
+        
+    }
+    T maxtop(){
+        return maxQueue[0];
+    }
+    void maxpop(){
+        maxQueue[0] = maxQueue[sizeMax-1];
+        --sizeMax;
+        heapifyMax(0);
+        
+    }
+    void printMedian(){
+
+        if(size%2==0){
+            cout<<maxtop()<<" "<<mintop();
+        }
+        else
+            cout<<mintop();
+        cout<<endl;
     }
 };
 #endif

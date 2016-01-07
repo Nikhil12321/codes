@@ -306,6 +306,67 @@ public:
             cout<<endl;
         }
     }
+    //pass by reference since we have to delete the second set
+    void combine(unordered_set<int> &s1, unordered_set<int> &s2){
+        unordered_set<int>::iterator it1 = s2.begin();
+        while(it1!=s2.end()){
+            s1.insert(*it1);
+            it1++;
+        }   
+    }
+    void minimumSpanningTree(){
+        vector<unordered_set<int> > v;
+        int mst[vertices+1][vertices+1];
+        for (int i = 0; i <= vertices; ++i)
+        {
+            for(int j=0; j<=vertices; j++)
+                mst[i][j] = 0;
+        }
+        //separate sets for each vertex
+        for (int i = 1; i <=vertices; ++i)
+        {
+            unordered_set<int> temp;
+            temp.insert(i);
+            v.push_back(temp);
+            temp.clear();
+        }
+        //since we want to erase the second set after combining, we need iterator to erase
+        //also we need iterators to pass to the combine set function
+        vector<unordered_set<int> >::iterator save1, save2;
+        for(int i=1; i<=vertices; i++){
+            //only the lower half of adjacency matrix is reqd. since we don't repeat edges
+            for(int j=1; j<=i; j++){
+                if(g[i][j] == 1){
+                    //iterate through vector of sets
+                    vector<unordered_set<int> >::iterator itv = v.begin();
+                    while(itv!=v.end()){
+                        //() are important since compiler confuses it with multiply operator
+                        if((*itv).find(i) != (*itv).end()){
+                            save1 = itv;
+                        }
+                        if((*itv).find(j) != (*itv).end()){
+                            save2 = itv;
+                        }
+                        itv++;
+                    }
+                    if(save1!=save2){
+                        //we pass value of iterators since value is the set int the vector
+                        combine(*save1, *save2);
+                        v.erase(save2);
+                        mst[i][j]=1;
+                        mst[j][i]=1;
+                    }
+                }
+            }
+        }
+        //print the mst
+        for(int i=0; i<=vertices; i++){
+            for(int j=0; j<=vertices; j++){
+                cout<<mst[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+    }
 
 };
 #endif

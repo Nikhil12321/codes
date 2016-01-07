@@ -1,10 +1,12 @@
-#ifndef Graph
-#define Graph
+#ifndef GRAPH_H
+#define GRAPH_H
 #include<iostream>
 #include<queue>
 #include<cstring>
 #include<stack>
+#include<unordered_set>
 using namespace std;
+
 class Graph{
 
     int **g;
@@ -19,9 +21,9 @@ public:
         g = new int*[vertices+1];
         
         for(int i=0; i<=vertices; i++){
-        
+
             g[i] = new int[vertices+1];
-        
+
             for(int j=0; j<=vertices; j++){
                 g[i][j] = 0;
             }
@@ -122,8 +124,11 @@ public:
                 }
             }
             for(int i=1; i<=vertices; i++){
-                if(visited[i] == 0)
+                if(visited[i] == 0){
                     q.push(i);
+                    visited[i]=1;
+                    break;
+                }
             }
             if(q.empty())
                 break;
@@ -151,8 +156,11 @@ public:
                 }
             }
             for(int i=1; i<=vertices; i++){
-                if(visited[i] == 0)
+                if(visited[i] == 0){
                     q.push(i);
+                    visited[i]=1;
+                    break;
+                }
             }
             if(q.empty())
                 break;
@@ -160,7 +168,7 @@ public:
     }
     void dfs(){
         if(vertices==0)
-            return 0;
+            return;
         stack<int> s;
         s.push(1);
         int visited[vertices+1];
@@ -180,8 +188,11 @@ public:
                 }
             }
             for(int i=1; i<=vertices; i++){
-                if(visited[i] == 0)
+                if(visited[i] == 0){
                     s.push(i);
+                    visited[i]=1;
+                    break;
+                }
             }
             if(s.empty())
                 break;
@@ -209,8 +220,11 @@ public:
                 }
             }
             for(int i=1; i<=vertices; i++){
-                if(visited[i] == 0)
+                if(visited[i] == 0){
                     s.push(i);
+                    visited[i]=1;
+                    break;
+                }
             }
             if(s.empty())
                 break;
@@ -282,8 +296,10 @@ public:
             }
             for(int i=1; i<=vertices; i++){
                 if(visited[i] == 0){
+                    visited[i]=1;
                     q.push(i);
                     connectedComponent++;
+                    break;
                 }
             }
             if(q.empty())
@@ -366,6 +382,103 @@ public:
             }
             cout<<endl;
         }
+    }
+    bool isCyclePresent(){
+        vector<unordered_set<int> > v;
+        int mst[vertices+1][vertices+1];
+        for (int i = 0; i <= vertices; ++i)
+        {
+            for(int j=0; j<=vertices; j++)
+                mst[i][j] = 0;
+        }
+        //separate sets for each vertex
+        for (int i = 1; i <=vertices; ++i)
+        {
+            unordered_set<int> temp;
+            temp.insert(i);
+            v.push_back(temp);
+            temp.clear();
+        }
+        //since we want to erase the second set after combining, we need iterator to erase
+        //also we need iterators to pass to the combine set function
+        vector<unordered_set<int> >::iterator save1, save2;
+        for(int i=1; i<=vertices; i++){
+            //only the lower half of adjacency matrix is reqd. since we don't repeat edges
+            for(int j=1; j<=i; j++){
+                if(g[i][j] == 1){
+                    //iterate through vector of sets
+                    vector<unordered_set<int> >::iterator itv = v.begin();
+                    while(itv!=v.end()){
+                        //() are important since compiler confuses it with multiply operator
+                        if((*itv).find(i) != (*itv).end()){
+                            save1 = itv;
+                        }
+                        if((*itv).find(j) != (*itv).end()){
+                            save2 = itv;
+                        }
+                        itv++;
+                    }
+                    //if cycle is found
+                    if(save1==save2){
+                        return true;
+                    }
+                    else if(save1!=save2){
+                        //we pass value of iterators since value is the set int the vector
+                        combine(*save1, *save2);
+                        v.erase(save2);
+                        mst[i][j]=1;
+                        mst[j][i]=1;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    bool isBipartite(){
+        if(vertices==0)
+            return true;
+        queue<int> q;
+        q.push(1);
+        int visited[vertices+1];
+        int group[vertices+1];
+        memset(group, -1, sizeof(group));
+        memset(visited, 0, sizeof(visited));
+        visited[1] = 1;
+        group[1] = 1;
+        while(1){
+            while(!q.empty()){
+                int temp = q.front();
+                q.pop();
+                for(int i=1; i<=vertices; i++){
+                    if(g[temp][i] == 1){
+                        if(group[i]==-1){
+                            if(group[temp]==1)
+                                group[i] = 2;
+                            else
+                                group[i] = 1;
+                        }
+                        else if((group[temp]-group[i]) == 0)
+                            return false;
+
+                        if(visited[i]==0){
+                            q.push(i);
+                            visited[i] = 1;
+                        }
+                    }
+                }
+            }
+            for(int i=1; i<=vertices; i++){
+                if(visited[i] == 0){
+                    group[i]=1;
+                    visited[i]=1;
+                    q.push(i);
+                    break;
+                }
+            }
+            if(q.empty())
+                break;
+        }
+        return true;
     }
 
 };

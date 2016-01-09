@@ -18,7 +18,7 @@ node * addNode(int data){
     temp->thread = NULL;
     return temp;
 }
-
+//point the threads of the threaded binary tree
 void makeThread(node *&root, node *pred, node *succ){
 
     if(!root->left && !root->right){
@@ -31,11 +31,12 @@ void makeThread(node *&root, node *pred, node *succ){
         makeThread(root->left, pred, root);
     if(root->right)
         makeThread(root->right, root, succ);
+    //if no right subtree then mark it as a successor to a previous node
     else if(!root->right)
         root->thread = succ;
     return;
 }
-
+//random function to see whether the thing works
 void edit(node *&root){
 
     node * temp = new node;
@@ -43,14 +44,14 @@ void edit(node *&root){
     temp->right = NULL;
     root = temp;
 }
-
+//reverse left and right subtrees
 void reverse(node * root){
 
     node * temp = root->left;
     root->left = root->right;
     root->right = temp;
 }
-
+//inroder traversal
 void inorder(node * root){
     if(root==NULL)
         return;
@@ -61,7 +62,8 @@ void inorder(node * root){
         inorder(root->right);
     return;
 }
-
+//find the leftmost element of a tree/subtree.
+//to find the inorder successor of an element root, call this function with leftmost(root->right)
 node * leftmost(node * root){
     if(root==NULL)
         return NULL;
@@ -69,7 +71,8 @@ node * leftmost(node * root){
         return root;
     return leftmost(root->left);
 }
-
+//to print the threaded binary tree (inorder, duh). We only need the first element of the seq. Rest are marked
+//by the threads
 void printThreaded(node * root){
 
     node * temp = leftmost(root);
@@ -80,23 +83,26 @@ void printThreaded(node * root){
         temp = temp->thread;
     }
 }
-
+//Just reverse the left and right subtrees of each node
 void mirror(node *&root){
 
     if(root->left)
         mirror(root->left);
     if(root->right)
         mirror(root->right);
+    //remember to take care of the cases where there is only one subtree
     if(root->left && !root->right)
     {
         root->right = root->left;
         root->left = NULL;
     }
+    //taking care of only right subtree case
     if(root->right && !root->left)
     {
         root->left = root->right;
         root->right = NULL;
     }
+    //both subtrees present
     else{
 
         node * temp = root->left;
@@ -107,6 +113,9 @@ void mirror(node *&root){
        
 }
 
+//function that finds and returns the nodes if found in case of lca
+//everything recieved by reference since elements not changed and memory is conserved
+//Can be used in cases if it is not known if one element is present or not
 node * lcaHelper(node *&node1, node *&node2, bool &flag1, bool &flag2, node *&root){
 
     if(!root)
@@ -157,7 +166,7 @@ node * lcaHelper(node *&node1, node *&node2, bool &flag1, bool &flag2, node *&ro
         return l;
     return r;
 }
-
+//flags get true if corresponding elements are found
 node * lca(node * root, node * node1, node * node2){
 
     bool flag1 = false;

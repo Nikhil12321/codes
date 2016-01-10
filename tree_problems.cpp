@@ -1,4 +1,5 @@
 #include<iostream>
+#include<climits>
 using namespace std;
 
 struct node{
@@ -8,6 +9,10 @@ struct node{
     node* right;
     node * thread;
 };
+
+int max(int a, int b){
+    return (a>b)?a:b;
+}
 
 node * addNode(int data){
 
@@ -177,10 +182,76 @@ node * lca(node * root, node * node1, node * node2){
     else
         return NULL;
 }
+//transform tree such that data of a node is the sum of its left subtree+root->data
+int leftSum(node *&root){
+    int lsum = 0;
+    int rsum = 0;
+    if(root->left)
+        lsum = leftSum(root->left);
+    if(root->right)
+        rsum = leftSum(root->right);
+    root->data = lsum + root->data;
+    //we return adding the right sum too because we need the sum of the whole
+    //left subtree in the parent node
+    return root->data + rsum;
+}
+
+//first element in pair represents the max sum which can be continued upwards if going upwards can create the max sum
+//the second element of the pair is the overall maximum sum of the entire tree below
+pair<int, int> maxPathSumHelper(node * root){
+    if((!root->left) && (!root->right)){
+        pair<int, int> p(root->data, root->data);
+        return p;
+    }
+
+    pair<int, int> pLeft(INT_MIN, INT_MIN);
+    pair<int, int> pRight(INT_MIN, INT_MIN);
+    if(root->left)
+        pLeft = maxPathSumHelper(root->left);
+    if(root->right)
+        pRight = maxPathSumHelper(root->right);
+
+    //m is the max of the overall maximums of left and right
+    int m = max(pLeft.second, pRight.second);
+
+    if(pLeft.first==INT_MIN)
+        pLeft.first = 0;
+    if(pRight.first==INT_MIN)
+        pRight.first = 0;
+
+    pair<int, int> ans;
+    //K is the sum of present element plus the sum of continuing left and right max sums
+    int k = pLeft.first + pRight.first + root->data;
+    //q is the maximum amongst the continued left and right trees
+    int q = max(pLeft.first, pRight.first);
+    //q is the sum of either left or right (whichever is max) and the present data to be sent above as the continuing max
+    q = q + root->data;
+    //if the sum formed by including the left, right and present continuing tree
+    //is greater than the left/right overall maximum, then overall maximum is left, right and present continuing sum sent above
+    if(k>m){
+
+        ans.first = q;
+        ans.second = k;
+        return ans;
+    }
+    //else overall maximum remains the same (left or right whichever is max)
+    else{
+        ans.first = q;
+        ans.second = m;
+        return ans;
+    }
+
+}
+//maximum path sum of a tree
+int maxPathSum(node * root){
+
+    pair<int, int> p = maxPathSumHelper(root);
+    return p.second;
+}
 
 
 int main(){
-
+    
     node * root = addNode(6);
     root->left = addNode(3);
     root->right = addNode(8);
@@ -189,11 +260,6 @@ int main(){
     node * b = root->right->left = addNode(7);
     root->right->right = addNode(11);
     root->right->right->right = addNode(13);
-    node * a = root->right->right->left = addNode(9);
-    node * l = lca(root, a, b);
-    if(l!=NULL)
-        cout<<l->data;
-    else
-        cout<<"NULL";
-
+    node * a = root->right->right->left = addNode(9);    
+    cout<<maxPathSum(root);    
 }

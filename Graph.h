@@ -6,7 +6,7 @@
 #include<stack>
 #include<unordered_set>
 using namespace std;
-
+//UNWEIGHTED
 class Graph{
 
     int **g;
@@ -480,6 +480,5 @@ public:
         }
         return true;
     }
-
 };
 #endif

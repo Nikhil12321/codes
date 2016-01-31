@@ -40,7 +40,7 @@ vector<vector<string> > partition(string s) {
             end++;
         }
     }
-    //printArr(mat, n);
+    printArr(mat, n);
     vector<vector<string> > dp[n];
     vector<string> v;
     v.push_back(s.substr(n-1, 1));

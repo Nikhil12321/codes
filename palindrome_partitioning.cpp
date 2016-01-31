@@ -1,12 +1,12 @@
 #include<iostream>
 #include<string>
 using namespace std;
-void printMatrix(int mat[][100], int n){
+void printArr(int **m, int n){
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            cout<<mat[i][j]<<" ";
+            cout<<m[i][j]<<" ";
         }
         cout<<endl;
     }
@@ -14,11 +14,13 @@ void printMatrix(int mat[][100], int n){
 int palindromePartitioning(string &str){
     int i, j, n, start, end;
     n = str.size();
-    int mat[n][n];
+    int **mat;
+    mat = new int*[n];
     /*
         in mat[i][j], if a string from i to j is a palindrome, then mat[i][j]=1 else 0
         */
     for(i=0; i<n; i++){
+        mat[i] = new int[n];
         for(j=0; j<n; j++){
             if(i==j){
                 mat[i][j] = 1;
@@ -27,7 +29,7 @@ int palindromePartitioning(string &str){
             mat[i][j] = 0;
         }
     }
-    for(i=1; i<n-1; i++){
+    for(i=1; i<n; i++){
         /*
         for odd length palindromes
         */
@@ -45,12 +47,14 @@ int palindromePartitioning(string &str){
         start = i-1;
         end = i;
         while(str[start]==str[end] && start>=0 && end<n){
+            cout<<"did one for start="<<start<<" and end="<<end<<endl;
             mat[start][end] = 1;
             mat[end][start] = 1;
             start--;
             end++;
         }
     }
+    printArr(mat, n);
     int dp[n];
     dp[0] = 0;
     for(i=1; i<n; i++){
@@ -87,3 +91,4 @@ int main(){
     cout<<ans<<endl;
 }
 //http://www.geeksforgeeks.org/dynamic-programming-set-17-palindrome-partitioning/
+//https://leetcode.com/problems/palindrome-partitioning-ii/

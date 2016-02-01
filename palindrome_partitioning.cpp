@@ -1,16 +1,6 @@
 #include<iostream>
 #include<string>
 using namespace std;
-void printArr(int **m, int n){
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            cout<<m[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-}
 int palindromePartitioning(string &str){
     int i, j, n, start, end;
     n = str.size();

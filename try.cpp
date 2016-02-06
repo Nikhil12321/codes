@@ -1,60 +1,49 @@
 #include<iostream>
-#include<climits>
+#include<vector>
 using namespace std;
-struct ListNode {
-      int val;
-      ListNode *next;
-      ListNode():val(0), next(NULL){}
-      ListNode(int x) : val(x), next(NULL) {}
-  };
-int removeNode(ListNode * head, int n, ListNode * parent){
+int bitManip(vector<int> v){
+    int i, j, ans, l;
+    int lans;
+    int n = v.size();
+    ans = v[0];
+    
+    for(i=1; i<n; i++)
+        ans = ans^v[i];
 
-    if(head->next == NULL){
-        /*
-            if last has to removed
-            */
-        if(n==1){
-            parent->next=NULL;
-            return INT_MIN;
+    for(l=2; l<=v.size(); l++){
+
+        i=0;
+        while(i<n){
+            if(i+l-1 >= n){
+           
+                break;
+            }
+            lans = v[i];
+
+            for(j=i+1; j<i+l && j<n; j++){
+
+                lans = lans^v[j];
+            }
+
+            i++;
+            ans = ans^lans;
         }
-        return 2;
     }
-    int temp = removeNode(head->next, n, head);
-    if(temp == n){
-        if(parent==NULL)
-            return -2;
-        parent->next = head->next;
-        return INT_MIN;
-    }
-    else{
-        return ++temp;
-    }
-}
-ListNode* removeNthFromEnd(ListNode* head, int n) {
-    /*
-        Reeaaaaaaaaaaaaaaaaaaaallllllllly important corner case
-        */
-    if(head->next == NULL && n>0)
-        return NULL;
-    int ans = removeNode(head, n, NULL);
-    if(ans == -2)
-        head = head->next;
-    return head;
-}
-void printList(ListNode * head){
-
-    while(head!=NULL){
-        cout<<head->val;
-        head = head->next;
-    }
+    return ans;
 }
 int main(){
-    ListNode * head = new ListNode(1);
-    head->next = new ListNode(2);
-    head->next->next = new ListNode(3);
-    head->next->next->next = new ListNode(4);
-    head->next->next->next->next = new ListNode(5);
-    removeNthFromEnd(head, 4);
-    printList(head);
-       
-}
+    int t, i, a, n;
+    std::vector<int> v;
+    int ans;
+    cin>>t;
+    while(t--){
+        cin>>n;
+        for(i=0; i<n; i++){
+            cin>>a;
+            v.push_back(a);
+        }
+        v.clear();
+        ans = bitManip(v);
+        cout<<ans<<endl;
+        }
+    }

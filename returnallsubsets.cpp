@@ -6,6 +6,33 @@ using namespace std;
 
 
 
+void power_set_algo(){
+			int a[];
+            long long int pow_set_size = pow(2, temp_size);
+            long long int counter;
+            for(counter = 0; counter<pow_set_size; counter++){
+                
+                set_sum = 0;
+                
+                for(j=0; j<temp_size; j++){
+                    
+                    if(counter & (1<<j)){
+                        cout<<a[j]<<" ";
+                    }
+                }
+                cout<<"\n";
+            }
+}
+
+
+
+
+
+
+
+
+
+//Repetitive elements
 vector<vector<int> > subsets(vector<int> &a, int pos){
 
 	
@@ -33,9 +60,35 @@ vector<vector<int> > subsets(vector<int> &a, int pos){
 
 	return temp;
 
+}
 
 
 
+//For distinct elements (non repetitve)
+vector<unordered_set<int> > gen_subsets(int arr[], int pos, int n){
+    vector<unordered_set<int> > s;
+    if(pos >= n)
+        return s;
+
+    vector<unordered_set<int> > ans, temp;
+    temp = gen_subsets(arr, pos+1, n);
+    int i;
+
+    //Copy all the old subsets
+    for(i=0; i<temp.size(); i++){
+        ans.push_back(temp[i]);
+    }
+
+    //Make the new with the current element inserted
+    for(i=0; i<temp.size(); i++){
+        unordered_set<int> tt = temp[i];
+        tt.insert(arr[pos]);
+        ans.push_back(tt);
+    }
+    unordered_set<int> x;
+    x.insert(arr[pos]);
+    ans.push_back(x);
+    return ans;
 }
 
 int main(){

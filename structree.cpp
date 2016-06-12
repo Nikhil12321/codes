@@ -1,70 +1,60 @@
 #include<iostream>
-
-
 using namespace std;
 
-
-struct BinaryTree{
-
+struct Node{
 
     int data;
-    BinaryTree * left;
-    BinaryTree * right;
-
+    Node * left;
+    Node * right;
+    Node(int d){
+        data = d;
+        left = right = NULL;
+    }
 };
 
 
 
-BinaryTree * createBinaryTree(){
-
-    BinaryTree * root = new BinaryTree();
-    int data;
-    cout<<"enter data"<<endl;
-    cin>>data;
-    root->data = data;
-    cout<<"left for"<<data<<"?(Y/N)"<<endl;
-    char ch;
-    cin>>ch;
-    if(ch == 'y'){
-
-        root->left = createBinaryTree();
-    }
-    else{
-        root->left = 0;
-    }
-    cout<<"right for"<<data<<"?(Y/N)"<<endl;
-    cin>>ch;
-    if(ch == 'y'){
-
-        root->right = createBinaryTree();
-    }
-    else{
-        root->right = 0;
-    }
-
-    return root;
-
-}
-
-
-void printInorder(BinaryTree * root){
-
-    if(!root)
+void inorder(Node * root){
+    if(root == NULL)
         return;
-
-    printInorder(root->left);
+    inorder(root->left);
     cout<<root->data<<" ";
-    printInorder(root->right);
-    return;
+    inorder(root->right);
 }
 
+
+Node * initTree(){
+
+    Node *root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->left->right = new Node(8);
+    root->left->left->right->left = new Node(9);
+    root->left->right = new Node(5);
+    root->left->right->right = new Node(10);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
+    return root;
+}
+
+
+int diameter(Node * root){
+
+    pair<int, int> ans = getDiameter(root);
+    return ans.first;
+
+}
+
+pair<int, int> getDiameter(Node * root){
+    pair<int, int> ans(0, 0);
+    return ans;
+
+}
 
 int main(){
 
-
-    BinaryTree *a;
-    a = createBinaryTree();
-
-
+    Node * root = initTree();
+    cout<<diameter(root);
 
 }

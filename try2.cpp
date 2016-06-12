@@ -1,13 +1,13 @@
-#include<iostream>
-#include<string>
-using namespace std;
-int main(){
-    string list = "a list of ";
-    string s;
-    getline(cin, s);
-    /*if(s == list.substr(0, list.size()))
-        cout<<true;
-    else
-        cout<<false;*/
-    cout<<s.substr(0, list.size());
+e_o = row.find(c);
+if(e_o){
+	if(!c_even && !x_even)
+		return false;
+	else if(c_even && x_even)
+		return false;
+}
+else{
+	if(!c_even && x_even)
+		return false;
+	else if(!c_even && !x_even)
+		return false;
 }

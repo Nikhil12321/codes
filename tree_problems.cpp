@@ -250,6 +250,55 @@ int maxPathSum(node * root){
 }
 
 
+//Find the diameter of a tree which is the longest path from any node to
+//any node in a tree. This is a helper function of the function below.
+//The pairs represent the following:
+//:::First element of the pair represents the ongoing length of the longest path
+//:::The second element represents the maximum path found beneath or of the node
+pair<int, int> getDiameter(Node * root){
+    pair<int, int> ans(0, 0);
+    pair<int, int> leftAns;
+    pair<int, int> rightAns;
+    
+    if(!root)return ans;
+    if(!root->left && !root->right)
+        return make_pair<int, int>(0, 0);
+    if(root->left)
+        leftAns = getDiameter(root->left);
+    else
+        leftAns = make_pair<int, int>(0, 0);
+    if(root->right)
+        rightAns = getDiameter(root->right);
+    else
+        rightAns = make_pair<int, int>(0, 0);
+    if(leftAns.first > rightAns.first){
+        ans.first = leftAns.first + 1;
+    }
+    else
+        ans.first = rightAns.first + 1;
+    
+    // start of second part calc
+    // We add two and not 1 because both edges of the node have to be added
+    int diameter;
+    if(leftAns.first == 0)
+        diameter = leftAns.first + rightAns.first + 1;
+    else if(rightAns.first == 0)
+        diameter = leftAns.first + rightAns.first + 1;
+    else
+        diameter = leftAns.first + rightAns.first + 2;
+    ans.second = max(diameter, leftAns.second, rightAns.second);
+    cout<<"values at "<<root->data<<" are "<<ans.first<<" "<<ans.second<<endl;
+    return ans;
+
+}
+
+int diameter(Node * root){
+
+    pair<int, int> ans = getDiameter(root);
+    return ans.second;
+
+}
+
 int main(){
     
     node * root = addNode(6);

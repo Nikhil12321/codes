@@ -13,6 +13,7 @@ char * reverse(char * str, int len){
 		i++;
 		j--;
 	}
+	return str;
 
 }
 char * itoa(int num, int base){
